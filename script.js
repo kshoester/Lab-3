@@ -8,6 +8,8 @@ const map = new mapboxgl.Map({
 });
 
 map.on('load', () => {
+
+/* adding green spaces data (vector tileset) to map */
     map.addSource('gspaces-data', {
         'type': 'vector',
         'url': 'mapbox://kshoester.5iice3d4'
@@ -18,10 +20,26 @@ map.on('load', () => {
         'source': 'gspaces-data',
         'paint': {
             'fill-color': '#8fc492',
-            'fill-opacity': 0.4,
+            'fill-opacity': 0.6,
             'fill-outline-color': 'black' /* find something better */
         },
         'source-layer': 'Green_Spaces-21rd0u'
     },
     );
+
+/* adding indoor ice rinks data (geojson from previous lab) to map */
+    map.addSource('rinks-data', {
+        type: 'geojson',
+        data: 'https://kshoester.github.io/Lab-2/indoor-ice-rinks-data.geojson'
+    });
+    map.addLayer({
+        'id': 'indoor-ice-rinks',
+        'type': 'circle',
+        'source': 'rinks-data',
+        'paint': {
+            'circle-radius': 4,
+            'circle-color': '#6388bf'
+        }
+    });
+
 });
