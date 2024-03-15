@@ -2,7 +2,7 @@ mapboxgl.accessToken = 'pk.eyJ1Ijoia3Nob2VzdGVyIiwiYSI6ImNsdG9jOXN3djBoMnYyaW1zY
 
 const map = new mapboxgl.Map({
     container: 'my-map',
-    style: 'mapbox://styles/kshoester/clts4o6wx00b301qs7j1sd8pn',
+    style: 'mapbox://styles/kshoester/cltsd7k7400ct01qs61u02utn',
     center: [-79.39, 43.66],
     zoom: 12,
 });
@@ -42,4 +42,23 @@ map.on('load', () => {
         }
     });
 
+/* adding cool spaces data (geojson) to map */
+    map.addSource('cspaces-data', {
+        type: 'geojson',
+        data: 'https://raw.githubusercontent.com/kshoester/Lab-3/main/data/air-conditioned-and-cool-spaces.geojson'
+    });
+    map.addLayer({
+        'id': 'cool-spaces',
+        'type': 'circle',
+        'source': 'cspaces-data',
+        'paint': {
+            'circle-radius': 2,
+            'circle-color': '#add8e6'
+        }
+    });
+
 });
+
+
+
+/* https://kshoester.github.io/Lab-3/air-conditioned-and-cool-spaces.geojson */ 
