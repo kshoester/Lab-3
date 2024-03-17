@@ -97,7 +97,7 @@ map.on('load', () => {
         'type': 'circle',
         'source': 'coolspaces-data', // source id
         'paint': {
-            'circle-radius': 4,
+            'circle-radius': 3.5,
             'circle-color': [
                 'match', // using match to set color based on string (get/step does not work with string values)
                 ['get', 'locationCode'],
