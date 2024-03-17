@@ -88,20 +88,26 @@ map.on('load', () => {
     });
 
 // adding cool spaces data (geojson) to map
-/*    map.addSource('cspaces-data', {
+    map.addSource('coolspaces-data', { // source id
         type: 'geojson',
-        data: 'https://kshoester.github.io/Lab-3/data/air-conditioned-and-cool-spaces.geojson'
+        data: 'https://kshoester.github.io/Lab-3/data/air-conditioned-and-cool-spaces.geojson' // link to data
     });
     map.addLayer({
-        'id': 'cool-spaces',
+        'id': 'water-facilities', // layer id
         'type': 'circle',
-        'source': 'cspaces-data',
+        'source': 'coolspaces-data', // source id
         'paint': {
-            'circle-radius': 2,
-            'circle-color': '#fc4e2a'
+            'circle-radius': 3,
+            'circle-color': [
+                'match', // using match to set color based on string (get/step does not work with string values)
+                ['get', 'locationCode'],
+                'SPLASHPAD', '#fdb462',
+                'INDOOR POOL', '#fb8072',
+                'OUTDOOR POOL', '#fccde5',
+                '#ffffb3' // default color if no match is found
+            ]
         },
-        // 'filter': ['==', ['get', 'locationCode'], 'POOL'] 
-    }); */
+    }); 
 
 // adding water sources data (geojson) to map
     map.addSource('water-data', { // source id
@@ -181,21 +187,138 @@ let legendcheck = document.getElementById('legendcheck');
 legendcheck.addEventListener('click', () => {
     if (legendcheck.checked) {
         legendcheck.checked = true;
-        legendcheck.style.display = 'block';
+        legend.style.display = 'block';
     }
     else {
-        legendcheck.style.display = 'none';
+        legend.style.display = "none";
         legendcheck.checked = false;
     }
 });
 
 // change map layer display based on check box using setLayoutProperty
+let layercheck = document.getElementById('layercheck');
+
 document.getElementById('layercheck').addEventListener('change', (e) => {
     map.setLayoutProperty(
-        'green-spaces',
+        'water-facilities',
         'visibility',
-        e.target.checked ? 'visible': 'none'
+        e.target.checked ? 'visible' : 'none'
     );
 });
 
+// filter water-facilities data layer to show selected facility type from dropdown selection
+let locationcode;
+
+document.getElementById("locationcodefieldset").addEventListener('change',(e) => {   
+    locationcode = document.getElementById('locationCode').value;
+
+    console.log(locationcode); // useful for testing whether correct values are returned from dropdown selection
+
+    if (locationcode == 'All') { // returns all points from water-facilities that have a value in _id
+        map.setFilter(
+            'water-facilities',
+            ['has', '_id'] 
+        );
+    } else { // returns points with locationCode value that matches dropdown selection
+        map.setFilter(
+            'water-facilities',
+            ['==', ['get', 'locationCode'], locationcode] // returns points with locationCode value that matches dropdown selection
+        );
+    }
+
+});
+
 //------------ JAVASCRIPT LEGEND ---------------//
+const waterfaclegendlabels = [ // declare array variables for labels + colours of water-facilities layer
+    'Splashpad',
+    'Indoor Pool',
+    'Outdoor Pool',
+];
+const waterfaclegendcolours = [
+    '#fdb462',
+    '#fb8072',
+    '#fccde5',
+];
+
+const waterfaclegend = document.getElementById('water-legend'); // declare legend variable using legend div tag
+
+// create a block to put colour/label in for each layer
+waterfaclegendlabels.forEach((label, i) => {
+    const colour = waterfaclegendcolours[i];
+
+    const item = document.createElement('div');
+    const key = document.createElement('span');
+
+    key.className = 'legend-key';
+    key.style.backgroundColor = colour;
+
+    const value = document.createElement('span');
+    value.innerHTML = `${label}`;
+
+    item.appendChild(key);
+    item.appendChild(value);
+
+    waterfaclegend.appendChild(item);
+});
+
+const rinklegendlabels = [ // declare array variables for labels + colours of indoor-ice-rinks layer
+    '0-100m',
+    '100-150m',
+    '150-200m'
+];
+const rinklegendcolours = [
+    '#bcbddc',
+    '#756bb1',
+    '#54278f',
+];
+
+const rinklegend = document.getElementById('rink-legend'); // declare legend variable using legend div tag
+
+// create a block to put colour/label in for each layer
+rinklegendlabels.forEach((label, i) => {
+    const colour = rinklegendcolours[i];
+
+    const item = document.createElement('div');
+    const key = document.createElement('span');
+
+    key.className = 'legend-key';
+    key.style.backgroundColor = colour;
+
+    const value = document.createElement('span');
+    value.innerHTML = `${label}`;
+
+    item.appendChild(key);
+    item.appendChild(value);
+
+    rinklegend.appendChild(item);
+});
+
+const misclegendlabels = [ // declare array variables for labels + colours of other layers
+    'Drinking Water',
+    'Park'
+];
+const misclegendcolours = [
+    '#9ecae1',
+    '#8fc492'
+];
+
+const misclegend = document.getElementById('misc-legend'); // declare legend variable using legend div tag
+
+// create a block to put colour/label in for each layer
+misclegendlabels.forEach((label, i) => {
+    const colour = misclegendcolours[i];
+
+    const item = document.createElement('div');
+    const key = document.createElement('span');
+
+    key.className = 'legend-key';
+    key.style.backgroundColor = colour;
+
+    const value = document.createElement('span');
+    value.innerHTML = `${label}`;
+
+    item.appendChild(key);
+    item.appendChild(value);
+
+    misclegend.appendChild(item);
+});
