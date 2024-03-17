@@ -14,3 +14,7 @@ https://open.toronto.ca/dataset/indoor-ice-rinks/
 
 green spaces
 https://open.toronto.ca/dataset/green-spaces/
+
+repository: https://github.com/kshoester/Lab-3
+
+website: https://kshoester.github.io/Lab-3/
